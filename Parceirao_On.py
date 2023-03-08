@@ -8,7 +8,6 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui_login = Ui_Window_login()
         self.ui_login.setup_ui(self)
-
         self.show()
 
 
