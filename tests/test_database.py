@@ -32,6 +32,16 @@ class TestDataBase(unittest.TestCase):
         conditions = [['item', '"ok"']]
 
         self.assertEqual(delete_table_row_support(database, table, conditions),  True)
+    
+    def test_word_crypter(self):
+        word = r'oadsfaosdlca,´pásl´dwqopszlkaos´sd´qwokie!@#$%¨&*()_+12315849788971234567890-=§ªº[]{}~^<>'
+        encrypted_word = r'851867922918859267476418,´66á9247´678697856692874710188592´9267´978685102628!@#$%¨&*()_+AaBACdbEDddEDAaBbCcDdEI-=§ªº[]{}~^<>'
+        self.assertEqual(word_crypter(word), encrypted_word)
+
+    def test_word_decryptor(self):
+        word = r'oadsfaosdlca,´pásl´dwqopszlkaos´sd´qwokie!@#$%¨&*()_+12315849788971234567890-=§ªº[]{}~^<>'
+        encrypted_word = r'851867922918859267476418,´66á9247´678697856692874710188592´9267´978685102628!@#$%¨&*()_+AaBACdbEDddEDAaBbCcDdEI-=§ªº[]{}~^<>'
+        self.assertEqual(word_decryptor(encrypted_word), word)
         
 if __name__ == '__main__':
     unittest.main()

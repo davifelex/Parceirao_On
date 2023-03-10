@@ -59,9 +59,7 @@ class DataBase:
             cursor = self.connection.cursor()
             cursor.execute(f'{sql};')
 
-            print(f'{sql};')
         except Exception as e:
-            print(f'{sql};')
             print(f'Data recording error: {e}')
             return False
         else:
@@ -89,7 +87,6 @@ class DataBase:
             cursor = self.connection.cursor()
             cursor.execute(f'{sql};')
             self.connection.commit()
-            print(f'{sql};')
 
         except Exception as error:
             print(f'error deleting row from database table: {error}')
@@ -121,6 +118,287 @@ def delete_table_row_support(database, table, conditions):
     status = db.delete_table_row(table, conditions)
     db.close_connection()
     return status
+
+# ---------------------------{Criptografia}----------------------------
+def word_crypter(word):
+    responce = ''
+    pair = 0
+    for letter in word:
+        pair += 1
+        if letter == 'A':
+            responce += '30'
+        elif letter == 'a':
+            responce += '18'
+        elif letter == 'B':
+            responce += '35'
+        elif letter == 'b':
+            responce += '14'
+        elif letter == 'C':
+            responce += '68'
+        elif letter == 'c':
+            responce += '64'
+        elif letter == 'D':
+            responce += '70'
+        elif letter == 'd':
+            responce += '67'
+        elif letter == 'E':
+            responce += '45'
+        elif letter == 'e':
+            responce += '28'
+        elif letter == 'F':
+            responce += '89'
+        elif letter == 'f':
+            responce += '29'
+        elif letter == 'G':
+            responce += '12'
+        elif letter == 'g':
+            responce += '32'
+        elif letter == 'H':
+            responce += '43'
+        elif letter == 'h':
+            responce += '36'
+        elif letter == 'I':
+            responce += '15'
+        elif letter == 'i':
+            responce += '26'
+        elif letter == 'J':
+            responce += '20'
+        elif letter == 'j':
+            responce += '40'
+        elif letter == 'K':
+            responce += '54'
+        elif letter == 'k':
+            responce += '10'
+        elif letter == 'L':
+            responce += '51'
+        elif letter == 'l':
+            responce += '47'
+        elif letter == 'M':
+            responce += '52'
+        elif letter == 'm':
+            responce += '78'
+        elif letter == 'N':
+            responce += '72'
+        elif letter == 'n':
+            responce += '75'
+        elif letter == 'O':
+            responce += '11'
+        elif letter == 'o':
+            responce += '85'
+        elif letter == 'P':
+            responce += '33'
+        elif letter == 'p':
+            responce += '66'
+        elif letter == 'Q':
+            responce += '44'
+        elif letter == 'q':
+            responce += '97'
+        elif letter == 'R':
+            responce += '48'
+        elif letter == 'r':
+            responce += '96'
+        elif letter == 'S':
+            responce += '46'
+        elif letter == 's':
+            responce += '92'
+        elif letter == 'T':
+            responce += '21'
+        elif letter == 't':
+            responce += '42'
+        elif letter == 'U':
+            responce += '23'
+        elif letter == 'u':
+            responce += '94'
+        elif letter == 'V':
+            responce += '22'
+        elif letter == 'v':
+            responce += '91'
+        elif letter == 'W':
+            responce += '55'
+        elif letter == 'w':
+            responce += '86'
+        elif letter == 'X':
+            responce += '88'
+        elif letter == 'x':
+            responce += '82'
+        elif letter == 'Y':
+            responce += '99'
+        elif letter == 'y':
+            responce += '80'
+        elif letter == 'Z':
+            responce += '74'
+        elif letter == 'z':
+            responce += '87'
+        else:
+            # -------{números}--------
+            if letter == '1':
+                responce += 'A'
+            elif letter == '2':
+                responce += 'a'
+            elif letter == '3':
+                responce += 'B'
+            elif letter == '4':
+                responce += 'b'
+            elif letter == '5':
+                responce += 'C'
+            elif letter == '6':
+                responce += 'c'
+            elif letter == '7':
+                responce += 'D'
+            elif letter == '8':
+                responce += 'd'
+            elif letter == '9':
+                responce += 'E'
+            elif letter == '0':
+                responce += 'I'
+
+            else:
+                responce += letter
+    return str(responce)
+
+def word_decryptor(wncrypted_word):
+    responce = ''
+    last = ''
+    i = 0
+    for letter in wncrypted_word:
+        if letter == 'A':
+            responce += '1'
+        elif letter == 'a':
+            responce += '2'
+        elif letter == 'B':
+            responce += '3'
+        elif letter == 'b':
+            responce += '4'
+        elif letter == 'C':
+            responce += '5'
+        elif letter == 'c':
+            responce += '6'
+        elif letter == 'D':
+            responce += '7'
+        elif letter == 'd':
+            responce += '8'
+        elif letter == 'E':
+            responce += '9'
+        elif letter == 'I':
+            responce += '0'
+
+        else:
+            if letter in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                if i == 0:
+                    last = letter
+                    i += 1
+                elif i == 1:
+                    d_letter = str(last) + str(letter)
+                    i = 0
+                    if d_letter == '30':
+                        responce += 'A'
+                    elif d_letter == '18':
+                        responce += 'a'
+                    elif d_letter == '35':
+                        responce += 'B'
+                    elif d_letter == '14':
+                        responce += 'b'
+                    elif d_letter == '68':
+                        responce += 'C'
+                    elif d_letter == '64':
+                        responce += 'c'
+                    elif d_letter == '70':
+                        responce += 'D'
+                    elif d_letter == '67':
+                        responce += 'd'
+                    elif d_letter == '45':
+                        responce += 'E'
+                    elif d_letter == '28':
+                        responce += 'e'
+                    elif d_letter == '89':
+                        responce += 'F'
+                    elif d_letter == '29':
+                        responce += 'f'
+                    elif d_letter == '12':
+                        responce += 'G'
+                    elif d_letter == '32':
+                        responce += 'g'
+                    elif d_letter == '43':
+                        responce += 'H'
+                    elif d_letter == '36':
+                        responce += 'h'
+                    elif d_letter == '15':
+                        responce += 'I'
+                    elif d_letter == '26':
+                        responce += 'i'
+                    elif d_letter == '20':
+                        responce += 'J'
+                    elif d_letter == '40':
+                        responce += 'j'
+                    elif d_letter == '54':
+                        responce += 'K'
+                    elif d_letter == '10':
+                        responce += 'k'
+                    elif d_letter == '51':
+                        responce += 'L'
+                    elif d_letter == '47':
+                        responce += 'l'
+                    elif d_letter == '52':
+                        responce += 'M'
+                    elif d_letter == '78':
+                        responce += 'm'
+                    elif d_letter == '72':
+                        responce += 'N'
+                    elif d_letter == '75':
+                        responce += 'n'
+                    elif d_letter == '11':
+                        responce += 'O'
+                    elif d_letter == '85':
+                        responce += 'o'
+                    elif d_letter == '33':
+                        responce += 'P'
+                    elif d_letter == '66':
+                        responce += 'p'
+                    elif d_letter == '44':
+                        responce += 'Q'
+                    elif d_letter == '97':
+                        responce += 'q'
+                    elif d_letter == '48':
+                        responce += 'R'
+                    elif d_letter == '96':
+                        responce += 'r'
+                    elif d_letter == '46':
+                        responce += 'S'
+                    elif d_letter == '92':
+                        responce += 's'
+                    elif d_letter == '21':
+                        responce += 'T'
+                    elif d_letter == '42':
+                        responce += 't'
+                    elif d_letter == '23':
+                        responce += 'U'
+                    elif d_letter == '94':
+                        responce += 'u'
+                    elif d_letter == '22':
+                        responce += 'V'
+                    elif d_letter == '91':
+                        responce += 'v'
+                    elif d_letter == '55':
+                        responce += 'W'
+                    elif d_letter == '86':
+                        responce += 'w'
+                    elif d_letter == '88':
+                        responce += 'X'
+                    elif d_letter == '82':
+                        responce += 'x'
+                    elif d_letter == '99':
+                        responce += 'Y'
+                    elif d_letter == '80':
+                        responce += 'y'
+                    elif d_letter == '74':
+                        responce += 'Z'
+                    elif d_letter == '87':
+                        responce += 'z'
+
+            else:
+                responce += letter
+
+    return str(responce)
 
 if __name__ == '__main__':
     database = r'.\DataBases\dados.db'
