@@ -402,7 +402,6 @@ def word_decryptor(wncrypted_word):
 
 def decrypt_list_of_lists(list_of_lists):
     responce = []
-
     for list in list_of_lists:
         temp = []
         for item in list:
@@ -427,10 +426,14 @@ def encrypt_list_of_lists(list_of_lists):
     return responce
 
 
-
-
 if __name__ == '__main__':
-    list = [['abcde', 'kkkjkjkj'], ['abcddasdae', 'aaaa']]
-    encrypted_list = encrypt_list_of_lists(list)
-    print(list)
-    print(encrypted_list)
+    from time import time
+    database = 'DataBases\dados.db'
+    table = 'cargas'
+    columns = '*'
+    list = table_reading_support(database, table, columns)
+
+    # encrypted_list = encrypt_list_of_lists(list)
+    time_init = time()
+    decrypted_list = decrypt_list_of_lists(list)
+    print(f'It took {time() - time_init} to decrypt the list')
