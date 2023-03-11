@@ -42,6 +42,10 @@ class TestDataBase(unittest.TestCase):
         word = r'oadsfaosdlca,´pásl´dwqopszlkaos´sd´qwokie!@#$%¨&*()_+12315849788971234567890-=§ªº[]{}~^<>'
         encrypted_word = r'851867922918859267476418,´66á9247´678697856692874710188592´9267´978685102628!@#$%¨&*()_+AaBACdbEDddEDAaBbCcDdEI-=§ªº[]{}~^<>'
         self.assertEqual(word_decryptor(encrypted_word), word)
+    
+    def test_decrypt_list_of_lists(self):
+        encrypted_list = [['1814646728', '1010104010401040'], ['18146467671892671828', '18181818']]
+        self.assertEqual(decrypt_list_of_lists(encrypted_list), [['abcde', 'kkkjkjkj'], ['abcddasdae', 'aaaa']])
         
 if __name__ == '__main__':
     unittest.main()
