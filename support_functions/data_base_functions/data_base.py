@@ -4,6 +4,7 @@ from threading import Thread
 import sys
 sys.path.append('.')
 from support_functions.data_base_functions.thread import thread_with_retorn_value
+from multiprocessing import Pool
 
 
 
@@ -408,15 +409,22 @@ def word_decryptor(wncrypted_word):
 
 def decrypt_list_of_lists(list_of_lists):
     responce = []
-    for list in list_of_lists:
-        temp = []
-        for item in list:
+
+    if type(list_of_lists[0]) != str:
+        for list in list_of_lists:
+            temp = []
+            for item in list:
+                try:
+                    temp.append(word_decryptor(str(item)))
+                except Exception:
+                    temp.append(str(item))
+            responce.append(temp)
+    else:
+        for item in list_of_lists:
             try:
-                temp.append(word_decryptor(str(item)))
+                responce.append(word_decryptor(str(item)))
             except Exception:
-                temp.append(str(item))
-        responce.append(temp)
-    
+                responce.append(str(item))
     return responce
 
 def encrypt_list_of_lists(list_of_lists):
@@ -433,48 +441,19 @@ def encrypt_list_of_lists(list_of_lists):
     return responce
 
 def parallel_decrypt_list_of_lists(list_of_lists):
-    # theading
-    num_tasks = math.floor(len(list_of_lists) / 3)
-    task1 = list_of_lists[:num_tasks]
-    task2 = list_of_lists[(num_tasks):(num_tasks + num_tasks)]
-    task3 = list_of_lists[(num_tasks+num_tasks):]
-    responce = []
-    # decrypted_list = decrypt_list_of_lists(task1)
-    t1 = thread_with_retorn_value(target=decrypt_list_of_lists, args=([task1]))
-    t1.start()
-    t2 = thread_with_retorn_value(target=decrypt_list_of_lists, args=([task2]))
-    t2.start()
-    t3 = thread_with_retorn_value(target=decrypt_list_of_lists, args=([task3]))
-    t3.start()
-    reponce_task1 = t1.join()
-    reponce_task2 = t2.join()
-    reponce_task3 = t3.join()
-    return reponce_task1 + reponce_task2 + reponce_task3
-
-def parallel_encrypt_list_of_lists(list_of_lists):
-    # theading
-    num_tasks = math.floor(len(list_of_lists) / 3)
-    task1 = list_of_lists[:num_tasks]
-    task2 = list_of_lists[(num_tasks):(num_tasks + num_tasks)]
-    task3 = list_of_lists[(num_tasks+num_tasks):]
-    responce = []
-    # decrypted_list = decrypt_list_of_lists(task1)
-    t1 = thread_with_retorn_value(target=encrypt_list_of_lists, args=([task1]))
-    t1.start()
-    t2 = thread_with_retorn_value(target=encrypt_list_of_lists, args=([task2]))
-    t2.start()
-    t3 = thread_with_retorn_value(target=encrypt_list_of_lists, args=([task3]))
-    t3.start()
-    reponce_task1 = t1.join()
-    reponce_task2 = t2.join()
-    reponce_task3 = t3.join()
-    return reponce_task1 + reponce_task2 + reponce_task3          
+    # multprocess
+    p = Pool()
+    result = p.map(decrypt_list_of_lists, (list_of_lists))
+    p.close()
+    p.join()
+    return result
+       
 
 if __name__ == '__main__':
     import math
     from time import time
-    database = r'C:\Users\davif\PycharmProjects\ParceiraoOnOficial\DataBase_Virtual_Sever\virtual_sever.db'
-    table = 'DaviFelexTobias'
+    database = r'DataBases/dados.db'
+    table = 'cargas'
     columns = '*'
     time_init = time()
     list = table_reading_support(database, table, columns)
