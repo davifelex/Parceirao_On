@@ -46,6 +46,10 @@ class TestDataBase(unittest.TestCase):
     def test_decrypt_list_of_lists(self):
         encrypted_list = [['1814646728', '1010104010401040'], ['18146467671892671828', '18181818']]
         self.assertEqual(decrypt_list_of_lists(encrypted_list), [['abcde', 'kkkjkjkj'], ['abcddasdae', 'aaaa']])
-        
+    
+    def test_encrypt_list_of_lists(self):
+        decrypted_list = [['abcde', 'kkkjkjkj'], ['abcddasdae', 'aaaa']]
+        self.assertEqual(encrypt_list_of_lists(decrypted_list), [['1814646728', '1010104010401040'], ['18146467671892671828', '18181818']])
+
 if __name__ == '__main__':
     unittest.main()

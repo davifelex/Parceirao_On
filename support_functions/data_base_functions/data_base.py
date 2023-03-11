@@ -413,10 +413,24 @@ def decrypt_list_of_lists(list_of_lists):
         responce.append(temp)
     return responce
 
+def encrypt_list_of_lists(list_of_lists):
+    responce = []
+
+    for list in list_of_lists:
+        temp = []
+        for item in list:
+            try:
+                temp.append(word_crypter(str(item)))
+            except Exception:
+                temp.append(str(item))
+        responce.append(temp)
+    return responce
+
+
 
 
 if __name__ == '__main__':
-    list = [[word_crypter('abcde'), word_crypter('kkkjkjkj')],[word_crypter('abcddasdae'), word_crypter('aaaa')]]
-    decrypted_list = decrypt_list_of_lists(list)
+    list = [['abcde', 'kkkjkjkj'], ['abcddasdae', 'aaaa']]
+    encrypted_list = encrypt_list_of_lists(list)
     print(list)
-    print(decrypted_list)
+    print(encrypted_list)
