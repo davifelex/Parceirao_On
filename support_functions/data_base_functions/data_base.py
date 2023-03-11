@@ -1,4 +1,10 @@
 from sqlite3 import *
+import math
+from threading import Thread
+import sys
+sys.path.append('.')
+from support_functions.data_base_functions.thread import thread_with_retorn_value
+
 
 
 class DataBase:
@@ -410,6 +416,7 @@ def decrypt_list_of_lists(list_of_lists):
             except Exception:
                 temp.append(str(item))
         responce.append(temp)
+    
     return responce
 
 def encrypt_list_of_lists(list_of_lists):
@@ -425,15 +432,62 @@ def encrypt_list_of_lists(list_of_lists):
         responce.append(temp)
     return responce
 
+def parallel_decrypt_list_of_lists(list_of_lists):
+    # theading
+    num_tasks = math.floor(len(list_of_lists) / 3)
+    task1 = list_of_lists[:num_tasks]
+    task2 = list_of_lists[(num_tasks):(num_tasks + num_tasks)]
+    task3 = list_of_lists[(num_tasks+num_tasks):]
+    responce = []
+    # decrypted_list = decrypt_list_of_lists(task1)
+    t1 = thread_with_retorn_value(target=decrypt_list_of_lists, args=([task1]))
+    t1.start()
+    t2 = thread_with_retorn_value(target=decrypt_list_of_lists, args=([task2]))
+    t2.start()
+    t3 = thread_with_retorn_value(target=decrypt_list_of_lists, args=([task3]))
+    t3.start()
+    reponce_task1 = t1.join()
+    reponce_task2 = t2.join()
+    reponce_task3 = t3.join()
+    return reponce_task1 + reponce_task2 + reponce_task3
+
+def parallel_encrypt_list_of_lists(list_of_lists):
+    # theading
+    num_tasks = math.floor(len(list_of_lists) / 3)
+    task1 = list_of_lists[:num_tasks]
+    task2 = list_of_lists[(num_tasks):(num_tasks + num_tasks)]
+    task3 = list_of_lists[(num_tasks+num_tasks):]
+    responce = []
+    # decrypted_list = decrypt_list_of_lists(task1)
+    t1 = thread_with_retorn_value(target=encrypt_list_of_lists, args=([task1]))
+    t1.start()
+    t2 = thread_with_retorn_value(target=encrypt_list_of_lists, args=([task2]))
+    t2.start()
+    t3 = thread_with_retorn_value(target=encrypt_list_of_lists, args=([task3]))
+    t3.start()
+    reponce_task1 = t1.join()
+    reponce_task2 = t2.join()
+    reponce_task3 = t3.join()
+    return reponce_task1 + reponce_task2 + reponce_task3          
 
 if __name__ == '__main__':
+    import math
     from time import time
-    database = 'DataBases\dados.db'
-    table = 'cargas'
+    database = r'C:\Users\davif\PycharmProjects\ParceiraoOnOficial\DataBase_Virtual_Sever\virtual_sever.db'
+    table = 'DaviFelexTobias'
     columns = '*'
+    time_init = time()
     list = table_reading_support(database, table, columns)
+    time_decrypted_parallel = time() - time_init
+    print(f'O tempo para ler foi: {time_decrypted_parallel}')
 
     # encrypted_list = encrypt_list_of_lists(list)
     time_init = time()
-    decrypted_list = decrypt_list_of_lists(list)
-    print(f'It took {time() - time_init} to decrypt the list')
+    decrypted_list_parallel = parallel_decrypt_list_of_lists(list)
+    time_decrypted_parallel = time() - time_init
+    print(f'O tempo para descriptar em paralello foi: {time_decrypted_parallel}')
+    time_init = time()
+    decrypted_list_seq = decrypt_list_of_lists(list)
+    time_decrypted_seq = time() - time_init
+    print(f'O tempo para descriptar em sequencial foi: {time_decrypted_seq}')
+    print(f'Igualdade de dados: {decrypted_list_parallel == decrypted_list_seq}')
