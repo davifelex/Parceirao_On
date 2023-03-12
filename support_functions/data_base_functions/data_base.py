@@ -1,9 +1,4 @@
 from sqlite3 import *
-import math
-from threading import Thread
-import sys
-sys.path.append('.')
-from support_functions.data_base_functions.thread import thread_with_retorn_value
 from multiprocessing import Pool
 
 
@@ -20,6 +15,11 @@ class DataBase:
             self.connection.close()
         except Exception:
             pass
+    
+    def unique_code(self, sql):
+        cursor = self.connection.cursor()
+        cursor.execute(f'{sql};')
+        cursor.connection.commit()
 
     # -----------------------{Funções de leitura}----------------------
     def reader_table(self, table, columns, conditions=[]):
@@ -65,6 +65,7 @@ class DataBase:
 
             cursor = self.connection.cursor()
             cursor.execute(f'{sql};')
+            
 
         except Exception as e:
             print(f'Data recording error: {e}')
@@ -447,10 +448,35 @@ def parallel_decrypt_list_of_lists(list_of_lists):
     p.close()
     p.join()
     return result
-       
+
+# ---------------------------{Create tables}----------------------------
+def crate_request_table(database, user):
+    sql = f'''CREATE TABLE "{user}" (
+	"user"	TEXT NOT NULL,
+	"data"	TEXT NOT NULL,
+	"target_table"	TEXT NOT NULL,
+	"type_task"	TEXT NOT NULL,
+	"status"	TEXT NOT NULL,
+	"date"	INT NOT NULL)'''
+
+    db = DataBase(database)
+    db.conecta()
+    try:
+        db.unique_code(sql)
+    except Exception as error:
+        print(f'Create table error: {error}')
+        status = False
+    else:
+        status = True
+    
+    db.close_connection()
+
+    return status
+
+
+    
 
 if __name__ == '__main__':
-    import math
     from time import time
     database = r'DataBases/dados.db'
     table = 'cargas'

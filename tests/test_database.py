@@ -21,7 +21,7 @@ class TestDataBase(unittest.TestCase):
         data = '"test", "ok"'
 
         self.assertEqual(write_row_table_support(database, table, columns, data), True)
-        data = '"ok", "ok"'
+        data = r'"ok", "ok\n\\\\n\n\n\n\wqdsdasdan\n"'
         condition = [['item', '"test"']]
         self.assertEqual(write_row_table_support(database, table, columns, data, condition), True)
 
@@ -48,8 +48,8 @@ class TestDataBase(unittest.TestCase):
         self.assertEqual(decrypt_list_of_lists(encrypted_list), [['abcde', 'kkkjkjkj'], ['abcddasdae', 'aaaa']])
     
     def test_parallel_decrypt_list_of_lists(self):
-        encrypted_list = [['1814646728', '1010104010401040'], ['18146467671892671828', '18181818']]
-        self.assertEqual(parallel_decrypt_list_of_lists(encrypted_list), [['abcde', 'kkkjkjkj'], ['abcddasdae', 'aaaa']])
+        encrypted_list = [['1814646728', '1010104010401040'], [r'18146\\46767189\n2671828', '18181818']]
+        self.assertEqual(parallel_decrypt_list_of_lists(encrypted_list), [['abcde', 'kkkjkjkj'], [r'ab\\cdda\nsdae', 'aaaa']])
     
     def test_encrypt_list_of_lists(self):
         decrypted_list = [['abcde', 'kkkjkjkj'], ['abcddasdae', 'aaaa']]
