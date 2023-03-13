@@ -19,6 +19,7 @@ class TestVirtualSever(unittest.TestCase):
         database = r"DataBase_Virtual_sever\virtual_sever.db"
         user = 'Tester1'
         self.assertEqual(exit_to_the_sever(database, user), True)
+        
 
 if __name__ == '__main__':
     unittest.main()

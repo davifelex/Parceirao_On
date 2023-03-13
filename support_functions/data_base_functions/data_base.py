@@ -476,7 +476,21 @@ def crate_request_table(database, user):
 
     return status
 
+# ---------------------------{Unique functions}-------------------------
+def single_function(database, sql):
+    db = DataBase(database)
+    db.conecta()
+    try:
+        db.unique_code(sql)
+    except Exception as error:
+        print(f'Single function error SQL:{sql}\n ERROR: {error}')
+        status = False
+    else:
+        status = True
+    
+    db.close_connection()
 
+    return status
     
 
 if __name__ == '__main__':

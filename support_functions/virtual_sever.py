@@ -1,8 +1,8 @@
-
 import sys
 sys.path.append('.')
 from support_functions.data_base_functions.data_base import *
 from time import time
+import random
 from datetime import datetime
 
 def request_task(type_task, database, user, table, data, columns, conditions=None, cryptography=True):
@@ -64,6 +64,27 @@ class Virtual_Sever:
         self.working = True
         while self.working == True:
             self.working = self.check_status()
+        
+        self.generate_hierarchy('complete')
+
+    # ---------------------------------{Core functions}---------------------------------
+    def generate_hierarchy(self, type_task='complete'):
+        users = table_reading_support(self.virtual_database, 'controller', 'user, office', [['status', '"1"']])
+        manager = random.choice(users)
+
+        if type_task == 'reset':
+            write_row_table_support(self.virtual_database, 'controller', 'office', '"manager"', [['user', f'"{manager[0]}"']])
+            for user in users:
+                if not user == manager:
+                    write_row_table_support(self.virtual_database, 'controller', 'office', '"worker"', [['user', f'"{user[0]}"']])
+        
+        elif type_task == 'complete':
+            for user in users:
+                if not user[1]:
+                    write_row_table_support(self.virtual_database, 'controller', 'office', '"worker"', [['user', f'"{user[0]}"']])
+
+
+        
 
     def login_to_the_sever(self):
         time_log = time()
