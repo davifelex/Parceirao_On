@@ -14,6 +14,11 @@ class TestVirtualSever(unittest.TestCase):
         type_task = 'insert'
         conditions = [['abc', 'fff'], ['asas', 'asdad']]
         self.assertEqual(request_task(type_task, database, user, table, data, columns), True)
-    pass
+    
+    def test_exit_to_the_sever(self):
+        database = r"DataBase_Virtual_sever\virtual_sever.db"
+        user = 'Tester1'
+        self.assertEqual(exit_to_the_sever(database, user), True)
+
 if __name__ == '__main__':
     unittest.main()

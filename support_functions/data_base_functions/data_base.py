@@ -23,25 +23,28 @@ class DataBase:
 
     # -----------------------{Funções de leitura}----------------------
     def reader_table(self, table, columns, conditions=[]):
-        sql = f'''SELECT {columns} FROM {table}'''
+        try:
+            sql = f'''SELECT {columns} FROM {table}'''
 
-        if conditions:
-                conditional_columns = ''
-                conditional_data = ''
-                
-                for condition in conditions:
-                    if len(conditional_columns)>0:
-                        conditional_columns += ','
-                        conditional_data += ','
+            if conditions:
+                    conditional_columns = ''
+                    conditional_data = ''
+                    
+                    for condition in conditions:
+                        if len(conditional_columns)>0:
+                            conditional_columns += ','
+                            conditional_data += ','
 
-                    conditional_columns += str(condition[0])
-                    conditional_data += str(condition[1])
+                        conditional_columns += str(condition[0])
+                        conditional_data += str(condition[1])
 
-                sql += f''' WHERE ({conditional_columns}) = ({conditional_data})'''
-        
-        cursor = self.connection.cursor()
-        cursor.execute(f'{sql};')
-        return cursor.fetchall()
+                    sql += f''' WHERE ({conditional_columns}) = ({conditional_data})'''
+            
+            cursor = self.connection.cursor()
+            cursor.execute(f'{sql};')
+            return cursor.fetchall()
+        except Exception:
+            return []
     
     # -----------------------{Funções de escrita}----------------------
     def write_row_table(self, table, columns, data, conditions=[]):

@@ -1,7 +1,9 @@
-from datetime import *
+
 import sys
 sys.path.append('.')
 from support_functions.data_base_functions.data_base import *
+from time import time
+from datetime import datetime
 
 def request_task(type_task, database, user, table, data, columns, conditions=None, cryptography=True):
     try:
@@ -9,7 +11,7 @@ def request_task(type_task, database, user, table, data, columns, conditions=Non
             conditions = []
         request_config = ''
         columns = 'user, data, target_table, type_task, status, date'
-        date = datetime.datetime.now()
+        date = datetime.now()
         date = f'{date}'
         
         if cryptography:
@@ -38,13 +40,62 @@ def request_task(type_task, database, user, table, data, columns, conditions=Non
     else:
         return True
 
-if __name__ == '__main__':
-    database = r"C:\Users\davif\OneDrive\Área de Trabalho\programas\Parceirão_On\DataBase_Virtual_sever\virtual_sever.db"
-    user = 'Tester9'
-    table = 'test'
-    data = ['asdaasad', 'asdadasda']
-    columns = 'item, item2'
-    type_task = 'insert'
-    conditions = [['abc', 'fff'], ['asas', 'asdad']]
+def exit_to_the_sever(virtual_database, user):
+        try:
+            write_row_table_support(virtual_database, 'controller', 'status', '0', [['user', f'"{user}"']])
+        except Exception as error:
+            print(f'Error in exit sever: {error}')
+            return False
+        else:
+            return True
+class Virtual_Sever:
+    def __init__(self, user, virtual_sever_database, database):
+        # -------------------------------{Defining Paths}-------------------------------
+        self.virtual_database = virtual_sever_database + '/virtual_sever.db'
+        self.main_database = database
+        # -----------------------------{Starting Variables}-----------------------------
+        self.user_log = user
 
-    request_task(type_task, database, user, table, data, columns)
+        # ---------------------------------{Start Sever}--------------------------------
+        login = False
+        while login == False:
+            login = self.login_to_the_sever()
+        
+        self.working = True
+        while self.working == True:
+            self.working = self.check_status()
+
+    def login_to_the_sever(self):
+        time_log = time()
+        log = rf'"{user}", 1, "{time_log}"'
+        
+        test_log = self.check_status()
+        try:
+            if test_log == 'not_log':
+                write_row_table_support(self.virtual_database, 'controller', 'user, status, time',
+                                        log)
+            if test_log == False:
+                write_row_table_support(self.virtual_database, 'controller', 'user, status, time',
+                                        log, [['user', f'"{self.user_log}"']])
+        except Exception as error:
+            print(f'Error when trying to join the server: {error}')
+            return False
+        else:
+            return True
+    
+    def check_status(self):
+        try:
+            status = table_reading_support(self.virtual_database, 'controller', 'status', [['user', f'"{self.user_log}"']])[0][0]
+            if status == '1':
+                status = True
+            else:
+                status = False
+        except Exception as error:
+            status = 'not_log'
+        return status
+
+if __name__ == '__main__':
+    user = 'Tester1'
+    database = r'C:\Users\davif\OneDrive\Área de Trabalho\programas\Parceirão_On\DataBases'
+    database_virtual = r'C:\Users\davif\OneDrive\Área de Trabalho\programas\Parceirão_On\DataBase_Virtual_sever'
+    Virtual_Sever(user, database_virtual, database)
