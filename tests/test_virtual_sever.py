@@ -7,7 +7,7 @@ from support_functions.virtual_sever import *
 class TestVirtualSever(unittest.TestCase):
     def test_request_task(self):
         database = r"DataBase_Virtual_sever\virtual_sever.db"
-        user = 'Tester12'
+        user = 'Tester1'
         table = 'test'
         data = ['asdaasad', 'asdadasda']
         columns = 'item, item2'

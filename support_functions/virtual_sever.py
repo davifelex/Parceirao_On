@@ -9,7 +9,7 @@ def request_task(type_task, database, user, table, data, columns, conditions=Non
     try:
         if not conditions:
             conditions = []
-        request_config = ''
+        request_config = f'{table}/¬/*/§/{type_task}/¬/*/§/'
         columns = 'user, data, target_table, type_task, status, date'
         date = datetime.now()
         date = f'{date}'
@@ -57,35 +57,55 @@ class Virtual_Sever:
         self.user_log = user
 
         # ---------------------------------{Start Sever}--------------------------------
+        self.generate_hierarchy()
+
         login = False
         while login == False:
             login = self.login_to_the_sever()
         
         self.working = True
+
         while self.working == True:
             self.working = self.check_status()
+
+            self.office = self.check_office()[0][0]
+
+            self.extract_pending_tasks()
+
+
+
+    # --------------------------------{Manager functions}--------------------------------
+    def extract_pending_tasks(self):
+        tables = table_reading_support(self.virtual_database, 'sqlite_master', 'tbl_name', [['type', '"table"']])
+        tasks =[]
+        for table in tables:
+            if table != 'controller':
+                task = table_reading_support(self.virtual_database, table[0], 'data', [['status', '"pending"']])
+                for a in task:
+                    tasks.append(a[0])
         
-        self.generate_hierarchy('complete')
+        print(tasks)
 
     # ---------------------------------{Core functions}---------------------------------
+
+    def check_office(self):
+        office = table_reading_support(self.virtual_database, 'controller', 'office', [['user', f'"{self.user_log}"']])
+        return office
+
     def generate_hierarchy(self, type_task='complete'):
         users = table_reading_support(self.virtual_database, 'controller', 'user, office', [['status', '"1"']])
-        manager = random.choice(users)
+        
+        for user in users:
+            if not user[1] == 'manager':
+                write_row_table_support(self.virtual_database, 'controller', 'office', '"worker"', [['user', f'"{user[0]}"']])
+            else:
+                if type_task == 'reset':
+                    write_row_table_support(self.virtual_database, 'controller', 'office', '"worker"', [['user', f'"{user[0]}"']])
 
         if type_task == 'reset':
+            manager = random.choice(users)
             write_row_table_support(self.virtual_database, 'controller', 'office', '"manager"', [['user', f'"{manager[0]}"']])
-            for user in users:
-                if not user == manager:
-                    write_row_table_support(self.virtual_database, 'controller', 'office', '"worker"', [['user', f'"{user[0]}"']])
         
-        elif type_task == 'complete':
-            for user in users:
-                if not user[1]:
-                    write_row_table_support(self.virtual_database, 'controller', 'office', '"worker"', [['user', f'"{user[0]}"']])
-
-
-        
-
     def login_to_the_sever(self):
         time_log = time()
         log = rf'"{user}", 1, "{time_log}"'
@@ -107,7 +127,7 @@ class Virtual_Sever:
     def check_status(self):
         try:
             status = table_reading_support(self.virtual_database, 'controller', 'status', [['user', f'"{self.user_log}"']])[0][0]
-            if status == '1':
+            if str(status) == '1':
                 status = True
             else:
                 status = False
